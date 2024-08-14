@@ -25,7 +25,7 @@ export default async function GetPrice(_) {
 
     const totalPayments = response.data.reduce((sum , i ) => { 
         return sum + (i.payments || 0 )
-    }, 0);
+    }, 0); 
 
     console.log(totalPayments);    
     return totalPayments;

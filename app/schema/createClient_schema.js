@@ -7,8 +7,7 @@ const CreateClientSchema = z.object({
     phone2: z.string().optional(),
     address: z.string().min(1, 'Dirreccion obligatoria'),
     dates: z.any().nullable().refine(value => value !== null, 'Fecha de pago obligatoria'),
-    payment: z.number().refine(value => value > 0, 'Ingrese un montor de pago'),
-    antennaPhotos: z.array(z.any()).optional()
+    payments: z.number().refine(value => value > 0, 'Ingrese un montor de pago'),
 })
 
 export default CreateClientSchema;

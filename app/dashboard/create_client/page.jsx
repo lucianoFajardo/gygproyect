@@ -11,9 +11,8 @@ export default function Create_client() {
     phone1: '',
     phone2: '',
     address: '',
-    antennaPhotos: [],
     dates: null,
-    payment: 0
+    payments: 0
   };
 
   const [client, setClient] = useState(initialStateData);
@@ -33,16 +32,12 @@ export default function Create_client() {
     setClient(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setClient(prevState => ({ ...prevState, antennaPhotos: [...e.target.files] }));
-  };
-
   const handleDatesChange = (e) => {
     setClient(prevState => ({ ...prevState, dates: e.value }));
   };
 
   const handlePaymentChange = (e) => {
-    setClient(prevState => ({ ...prevState, payment: e.value }));
+    setClient(prevState => ({ ...prevState, payments: e.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -62,11 +57,7 @@ export default function Create_client() {
           ...client,
           dates: client.dates.map(date => date.toISOString()), // Convertir fechas a ISO
         };
-
-        console.log(clientObject)
         await CreateClientGyGSupabase(clientObject);
-        // Pasar el objeto plano
-        console.log('Cliente guardado con éxito');
       } catch (error) {
         console.log(error.message);
       }
@@ -77,8 +68,6 @@ export default function Create_client() {
       }, 2000);
     }
   };
-
-
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -159,27 +148,14 @@ export default function Create_client() {
           <div className="mb-4">
             <label htmlFor="payment" className="block text-gray-700">Monto de Pago</label>
             <Dropdown
-              value={client.payment}
+              value={client.payments}
               onChange={handlePaymentChange}
               options={moneyOptions}
               optionLabel="label"
               placeholder="Seleccione un monto"
               className="input input-bordered w-full mt-2"
             />
-            {errors.payment && <span className="text-red-500">{errors.payment._errors.join(', ')}</span>}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="antennaPhotos" className="block text-gray-700">Pantallazo antena (opcional)</label>
-            <input
-              type="file"
-              id="antennaPhotos"
-              name="antennaPhotos"
-              onChange={handleFileChange}
-              className="file-input w-full mt-2"
-              multiple
-            />
-          </div>
-          <div>
+            {errors.payments && <span className="text-red-500">{errors.payments._errors.join(', ')}</span>}
           </div>
           <button
             type="submit"

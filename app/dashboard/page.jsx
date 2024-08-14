@@ -1,50 +1,69 @@
 'use client'
-import React from 'react'
-import Navbar_component from '../components/Navbar_component'
-import Stats_component from '../components/Stats_component'
+import React, { useEffect, useState } from 'react';
+import Stats_component from '../components/Stats_component';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import GetDataUser from './getData_user_server';
+import GetPrice from '../components/js/stats_server';
 
 export default function Dashboard_page() {
+    const [dataUser, setDataUser] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const dataCatch = await GetDataUser();
+                GetPrice()
+                setDataUser(dataCatch);
+            } catch (error) {
+                console.error('Catch Error -> ', error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const formatData = (value) => {
+        const setDatacalendar = new Date(value);
+        return setDatacalendar.toLocaleDateString('es-ES');
+    };
+
+    const dateBodyTemplate = (rowData) => {
+        // Asegúrate de que `dates` no esté vacío y selecciona la primera fecha
+        if (rowData.dates && rowData.dates.length > 0) {
+            const formattedDates = rowData.dates.map(date => formatData(date)).join(' - ');
+            return formattedDates;
+        } else {
+            return 'Fecha no disponible'; //* este es en el caso de que no tenga fechas pero no tendria que pasar ya que esta condicionado a que si o si llega con una fecha
+        }
+    };
+
+    if (loading) {
+        return <div className='flex justify-center pt-60'>
+            <span className="loading loading-bars loading-lg"/>
+        </div>
+    }
+
     return (
         <>
             <section>
-                <p>estadisticas</p>
+                <h1><p className="uppercase text-2xl p-3">Estadísticas</p></h1>
                 <Stats_component />
-                <h1>Clientes nuevos: mostrar 10 nuevos</h1>
-                <div className='bg-gray-200 rounded-lg'>
-                    <div className="overflow-x-auto">
-                        <table className="table">
-                            {/* cabezera*/}
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Nombre cliente</th>
-                                    <th>Telefono</th>
-                                    <th>Direccion</th>
-                                    <th>Fechas de pago</th>
-                                    <th>Plan</th>
-                                    <th>Ubicacion gps</th>
-                                    <th>foto de antena</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>1</th>
-                                    <td>Raul lucidio</td>
-                                    <td>982261454</td>
-                                    <td>av colima St 33</td>
-                                    <td>1 al 15</td>
-                                    <td>$ 25.000</td>
-                                    <td>ubicacion </td>
-                                    <td>pantallazo de antena</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <h2><p className="uppercase text-xl p-3">Clientes recientes</p></h2>
+                <DataTable value={dataUser} tableStyle={{ minWidth: '50rem' }} className='p-5' stripedRows paginator rows={5}>
+                    <Column field="name" header="Nombre cliente"></Column>
+                    <Column field="phone1" header="Teléfono 1"></Column>
+                    <Column field="phone2" header="Teléfono 2"></Column>
+                    <Column field="address" header="Dirección"></Column>
+                    <Column field="dates" header="Fecha de pago" body={dateBodyTemplate} />
+                    <Column field="payments" header="Plan" ></Column>
+                </DataTable>
                 <div className='p-5'>
-                    <button class="btn btn-primary" onClick={() => console.log('ver todos los clientes')}>ver clientes</button>
+                    <button className="btn btn-primary" onClick={''}>Ver clientes</button>
                 </div>
             </section>
         </>
-    )
+    );
 }

@@ -1,16 +1,32 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
+import GetPrice from './js/stats_server';
 
 export default function Stats_component() {
+    
+    const [payments , setPayments] = useState();
+    //* despues adaptarlo a modo telefono,
+    //* aqui debo de mostrar la data obenida de supabase
 
-    //* despues adaptarlo a modo telefono
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+              //  const dataPrices = await GetPrice();
+            } catch (error) {
+                console.error('Catch Error -> ', error.message);
+            } 
+        };
+        fetchData();
+    }, []);
+
     return (
         <div className="stats shadow grid grid-flow-col justify-stretch ">
             <div className="stat">
                 <div className="stat-figure text-primary">
                 </div>
                 <div className="stat-title">Dinero total </div>
+                <p>{payments}</p>
                 <div className="stat-value text-primary">3.500.000</div>
-                <div className="stat-desc">Mes de junio</div>
             </div>
             <div className="stat">
                 <div className="stat-figure text-secondary">
@@ -40,3 +56,8 @@ export default function Stats_component() {
         </div>
     )
 }
+
+
+//* en este apartado tengo que obtener los datos y el plan de todos los usuarios para sacar un total completo del dinero
+// * despues debo de poder obtener la cantidad total de dinero hasta el momento en ese mes , osea si es junio todo el dinero total hasta el 30 de todos los meses
+//* si empieza un nuevo mes tiene que volver el contador a cero y mostrar el total de cliente que han pagado hasta ese momento

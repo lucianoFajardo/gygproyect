@@ -27,8 +27,11 @@ export default function Navbar_component() {
                                 Crear cliente
                             </Link>
                         </li>
-
-                        <li><a>Ver clientes</a></li>
+                        <li>
+                            <Link href={'/dashboard/show_client'}>
+                                Ver cliente
+                            </Link>
+                        </li>
                         <li><a>Configuración</a></li>
                         <li><a>Cerrar sesion</a></li>
                     </ul>

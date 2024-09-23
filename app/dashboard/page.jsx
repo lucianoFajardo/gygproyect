@@ -31,7 +31,7 @@ export default function Dashboard_page() {
     };
 
     const dateBodyTemplate = (rowData) => {
-        // Asegúrate de que `dates` no esté vacío y selecciona la primera fecha
+        //* Asegúrate de que `dates` no esté vacío y selecciona la primera fecha
         if (rowData.dates && rowData.dates.length > 0) {
             const formattedDates = rowData.dates.map(date => formatData(date)).join(' - ');
             return formattedDates;
@@ -61,9 +61,11 @@ export default function Dashboard_page() {
                     <Column field="payments" header="Plan" ></Column>
                 </DataTable>
                 <div className='p-5'>
-                    <button className="btn btn-primary" onClick={''}>Ver clientes</button>
+                    <button className="btn btn-primary" onClick={() => {}}>Ver clientes</button> 
                 </div>
             </section>
         </>
     );
+
+    //** aqui tiene que mandar al apartado de ver la tabla de clientes para poder editarla */
 }

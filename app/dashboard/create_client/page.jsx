@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import CreateClientSchema from '@/app/schema/createClient_schema';
@@ -33,7 +33,16 @@ export default function Create_client() {
   };
 
   const handleDatesChange = (e) => {
-    setClient(prevState => ({ ...prevState, dates: e.value }));
+    console.log('fechas seleccionadas: ', e.value)
+    Array.isArray(e.value) ? e.value.map(date => new Date(date)) : [];
+    const [start, end] = e.value;
+    if (start && end && start.getFullYear() === end.getFullYear()) {
+      setClient(prevState => ({ ...prevState, dates: [start, end] }));
+    } else {
+      const endDate = new Date(start);
+      endDate.setDate(start.getDate() + 4);
+      setClient(prevState => ({ ...prevState, dates: [start, endDate] }));
+    }
   };
 
   const handlePaymentChange = (e) => {
@@ -65,7 +74,7 @@ export default function Create_client() {
       setTimeout(() => {
         setSuccess(false);
         setClient(initialStateData);
-      }, 2000);
+      }, 1000);
     }
   };
 

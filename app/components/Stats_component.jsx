@@ -1,20 +1,24 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import GetPrice from './js/stats_server';
+import GetPrice, { GetTotalClients } from './js/stats_server';
 
 export default function Stats_component() {
-    
-    const [payments , setPayments] = useState();
+
+    const [payments, setPayments] = useState();
+    const [totalClient , setTotalClient] = useState();
     //* despues adaptarlo a modo telefono,
     //* aqui debo de mostrar la data obenida de supabase
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-              //  const dataPrices = await GetPrice();
+                const dataPrices = await GetPrice();
+                setPayments(dataPrices);
+                const dataClientTotal = await GetTotalClients();
+                setTotalClient(dataClientTotal);
             } catch (error) {
                 console.error('Catch Error -> ', error.message);
-            } 
+            }
         };
         fetchData();
     }, []);
@@ -25,8 +29,7 @@ export default function Stats_component() {
                 <div className="stat-figure text-primary">
                 </div>
                 <div className="stat-title">Dinero total </div>
-                <p>{payments}</p>
-                <div className="stat-value text-primary">3.500.000</div>
+                <div className="stat-value text-primary">$ {payments}</div>
             </div>
             <div className="stat">
                 <div className="stat-figure text-secondary">
@@ -43,7 +46,7 @@ export default function Stats_component() {
                     </svg>
                 </div>
                 <div className="stat-title">Total de clientes</div>
-                <div className="stat-value text-secondary">1500</div>
+                <div className="stat-value text-secondary">{totalClient}</div>
                 <div className="stat-desc">Clientes instalados nuevos</div>
             </div>
 

@@ -9,6 +9,10 @@ export class Client {
             ? clientData.dates.map(date => new Date(date))
             : [];
         this.payments = clientData.payments;
+        this.district = clientData.district;
+        this.status = clientData.status;
+        this.coordenates = clientData.coordenates;
+        this.type_payment = clientData.type_payment;
     }
 
     toObject() {
@@ -19,6 +23,10 @@ export class Client {
             address: this.address,
             dates: this.dates.map(date => date.toISOString()),
             payments: this.payments,
+            district: this.district,
+            status: this.status,
+            coordenates : this.coordenates,
+            type_paymet : this.type_payment,
         };
     }
 }

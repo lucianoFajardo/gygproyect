@@ -2,7 +2,6 @@
 import { CreateClient } from "@/app/utils/supabase/server"
 const supabase = CreateClient(); //* Mi objeto de supabase esta creado aqui, puedo llamarlo en cualquier parte solamente de esta clase
 
-//
 async function supabseCall({ fromSql, selectSql, count }) {
     const { data, error } = (await supabase.from(fromSql).select(selectSql, {count}));
     if (error) {
@@ -13,17 +12,13 @@ async function supabseCall({ fromSql, selectSql, count }) {
     return { error: false, data };
 }
 
-export default async function GetPrice(_) {
-    const response = await supabseCall({ fromSql: 'create_user', selectSql: 'payments' });
-    if(response.error) {
-        console.log(response.message);
-        return response.code;
-    }
-    const totalPayments = response.data.reduce((sum , i ) => { 
-        return sum + (i.payments || 0 )
-    }, 0);  
-    return totalPayments;
-}
+const onRowEditComplete = (e) => {
+    let dataClient = [...clients];
+    let { newData, index } = e;
+    dataClient[index] = newData;
+    return <div> {dataClient[index]['payments']} </div>
+    };
+
 
 export async function GetTotalClients(_) {
     const res = await supabseCall({fromSql: 'create_user', selectSql: 'uuid' , count: 'exact'})

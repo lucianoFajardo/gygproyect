@@ -12,7 +12,12 @@ export default function Create_client() {
     phone2: '',
     address: '',
     dates: null,
-    payments: 0
+    payments: 0,
+    coordenates: '',
+    observations: '',
+    district: '',
+    status: '',
+    type_payment: '',
   };
 
   const [client, setClient] = useState(initialStateData);
@@ -27,31 +32,62 @@ export default function Create_client() {
     { label: '$ 40,000', value: 40000 }
   ];
 
+  const typePayment = [
+    { label: 'Efectivo', value: 'Efectivo' },
+    { label: 'Deposito', value: 'Deposito' },
+  ]
+
+  const serverDistrict = [
+    { label: 'Boro', value: 'servidor Boro' },
+    { label: 'Hospital', value: 'servidor Hospital' },
+    { label: 'Mula', value: 'servidor Mula' },
+  ]
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setClient(prevState => ({ ...prevState, [name]: value }));
   };
 
   const handleDatesChange = (e) => {
-    console.log('fechas seleccionadas: ', e.value)
-    Array.isArray(e.value) ? e.value.map(date => new Date(date)) : [];
-    const [start, end] = e.value;
-    if (start && end && start.getFullYear() === end.getFullYear()) {
-      setClient(prevState => ({ ...prevState, dates: [start, end] }));
-    } else {
-      const endDate = new Date(start);
-      endDate.setDate(start.getDate() + 4);
-      setClient(prevState => ({ ...prevState, dates: [start, endDate] }));
+    const selectedDates = Array.isArray(e.value) ? e.value.map(date => new Date(date)) : [];
+    const [start] = selectedDates;
+    console.log('Fecha seleccionada:', start);
+    // Verificar si la fecha de inicio es válida
+    if (!start || isNaN(start.getTime())) {
+      console.error('Fecha inicial no válida');
+      return;
     }
+    // Obtener el último día del mes actual
+    const lastDayOfMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
+    // Calcular la fecha final, asegurándose de que no cruce el límite del mes actual
+    const endDate = new Date(start);
+    const newDay = start.getDate() + 5;
+    if (newDay > lastDayOfMonth) {
+      // Si se pasa del último día del mes, se ajusta al último día del mes actual
+      endDate.setDate(lastDayOfMonth);
+    } else {
+      // De lo contrario, simplemente sumamos 5 días
+      endDate.setDate(newDay);
+    }
+    setClient(prevState => ({ ...prevState, dates: [start, endDate] }));
   };
+
+
 
   const handlePaymentChange = (e) => {
     setClient(prevState => ({ ...prevState, payments: e.value }));
   };
 
+  const handlerTypePayment = (e) => {
+    setClient(prevState => ({ ...prevState, type_payment: e.value }));
+  }
+
+  const handlerDistrictChange = (e) => {
+    setClient(prevState => ({ ...prevState, district: e.value }))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const resultValidateForm = CreateClientSchema.safeParse(client);
     if (!resultValidateForm.success) {
       const fieldError = resultValidateForm.error.format();
@@ -70,7 +106,6 @@ export default function Create_client() {
       } catch (error) {
         console.log(error.message);
       }
-
       setTimeout(() => {
         setSuccess(false);
         setClient(initialStateData);
@@ -138,6 +173,7 @@ export default function Create_client() {
             />
             {errors.address && <span className="text-red-500">{errors.address._errors.join(', ')}</span>}
           </div>
+
           <div className="mb-4">
             <label htmlFor="dates" className="block text-gray-700">Fecha de Pago</label>
             <Calendar
@@ -145,7 +181,6 @@ export default function Create_client() {
               onChange={handleDatesChange}
               selectionMode="range"
               showIcon
-              showButtonBar
               dateFormat="dd/mm/yy"
               readOnlyInput
               hideOnRangeSelection
@@ -154,6 +189,7 @@ export default function Create_client() {
             />
             {errors.dates && <span className="text-red-500">{errors.dates._errors.join(', ')}</span>}
           </div>
+
           <div className="mb-4">
             <label htmlFor="payment" className="block text-gray-700">Monto de Pago</label>
             <Dropdown
@@ -165,6 +201,59 @@ export default function Create_client() {
               className="input input-bordered w-full mt-2"
             />
             {errors.payments && <span className="text-red-500">{errors.payments._errors.join(', ')}</span>}
+
+          </div>
+          <div className="mb-4">
+            <label htmlFor="type_payment" className="block text-gray-700">Forma de pago</label>
+            <Dropdown
+              value={client.type_payment}
+              onChange={handlerTypePayment}
+              options={typePayment}
+              optionLabel="label"
+              placeholder="Seleccione una forma de pago"
+              className="input input-bordered w-full mt-2"
+            />
+            {errors.type_payment && <span className="text-red-500">{errors.type_payment._errors.join(', ')}</span>}
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="coordenates" className="block text-gray-700">Latitud y longitud</label>
+            <input
+              type="text"
+              id="coordenates"
+              name="coordenates"
+              value={client.coordenates}
+              onChange={handleChange}
+              className="input input-bordered w-full mt-2"
+              placeholder="Ingrese latitud y longitud"
+            />
+            {errors.coordenates && <span className="text-red-500">{errors.coordenates._errors.join(', ')}</span>}
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="district" className="block text-gray-700">Servidor perteneciente</label>
+            <Dropdown
+              value={client.district}
+              onChange={handlerDistrictChange}
+              options={serverDistrict}
+              optionLabel="label"
+              placeholder="Seleccione servidor"
+              className="input input-bordered w-full mt-2"
+            />
+            {errors.district && <span className="text-red-500">{errors.district._errors.join(', ')}</span>}
+          </div>
+          <div className="mb-4">
+            <label htmlFor="observations" className="block text-gray-700">Obvservaciones</label>
+            <input
+              type="text"
+              id="observations"
+              name="observations"
+              value={client.observations}
+              onChange={handleChange}
+              className="input input-bordered w-full mt-2"
+              placeholder="Ingrese una observacion del cliente"
+            />
+            {errors.observations && <span className="text-red-500">{errors.observations._errors.join(', ')}</span>}
           </div>
           <button
             type="submit"

@@ -12,8 +12,6 @@ export default function Stats_component() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const dataPrices = await GetPrice();
-                setPayments(dataPrices);
                 const dataClientTotal = await GetTotalClients();
                 setTotalClient(dataClientTotal);
             } catch (error) {

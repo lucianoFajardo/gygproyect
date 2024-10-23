@@ -4,17 +4,15 @@ import Stats_component from '../components/Stats_component';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import GetDataUser from './getData_user_server';
-import GetPrice from '../components/js/stats_server';
-
 export default function Dashboard_page() {
     const [dataUser, setDataUser] = useState([]);
+    const [price , setPrice] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const dataCatch = await GetDataUser();
-                GetPrice()
                 setDataUser(dataCatch);
             } catch (error) {
                 console.error('Catch Error -> ', error.message);

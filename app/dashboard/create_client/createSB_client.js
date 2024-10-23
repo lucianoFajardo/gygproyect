@@ -12,12 +12,17 @@ export default async function CreateClientGyGSupabase(client) {
             address: client.address,
             dates: client.dates,
             payments: client.payments,
+            coordenates: client.coordenates,
+            observations: client.observations,
+            district: client.district,
+            status: client.status,
+            type_payment: client.type_payment,
         }]);
         if (error) {
-            console.log('ERROR browser -> ',error.message);
+            console.error('ERROR browser -> ', error.message);
         }
         return data;
     } catch (error) {
-        console.log('ERROR because-> ', error);
+        console.error('ERROR because-> ', error);
     }
 }

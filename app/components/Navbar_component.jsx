@@ -33,7 +33,9 @@ export default function Navbar_component() {
                             </Link>
                         </li>
                         <li><a>Configuración</a></li>
+                        <li><a>Ingresos y pagos</a></li>
                         <li><a>Cerrar sesion</a></li>
+                        
                     </ul>
                 </div>
             </div>

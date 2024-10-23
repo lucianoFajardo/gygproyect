@@ -12,21 +12,20 @@ import GetDataUser from '../getData_user_server';
 
 export default function RowEditingDemo() {
   const [clients, setClients] = useState(null);
-  const [statuses] = useState(['Activo', 'Atrasado', 'Retirado']);
+  const [statuses] = useState(['active', 'retired']);
 
   useEffect(() => {
     GetDataUser().then((data) => {
       setClients(data)
+      console.log(data)
     })
   }, []);
 
   const getSeverity = (value) => {
     switch (value) {
-      case 'Activo':
+      case 'active':
         return 'success';
-      case 'Atrasado':
-        return 'warning';
-      case 'Retirado':
+      case 'retired':
         return 'danger';
       default:
         return null;
@@ -34,12 +33,12 @@ export default function RowEditingDemo() {
   };
 
   //* esta funcion es para editar los campos 
+  //* aqui tiene que estar la llamada a la base de datos por que aqui almaceno los datos
   const onRowEditComplete = (e) => {
     let dataClient = [...clients];
     let { newData, index } = e;
     dataClient[index] = newData;
     console.log('dato cambiado ->', newData)
-    console.log('Cliente seleccionado ->' , ...clients[index]['payments']);
     setClients(dataClient);
   };
 
@@ -55,7 +54,7 @@ export default function RowEditingDemo() {
         value={options.value}
         options={statuses}
         onChange={(e) => options.editorCallback(e.value)}
-        placeholder="Select a Status"
+        placeholder="Estado cliente"
         itemTemplate={(option) => {
           return <Tag value={option} severity={getSeverity(option)}></Tag>;
         }}
@@ -70,11 +69,11 @@ export default function RowEditingDemo() {
 
   //* Este es el estatud del estado del cliente para poder editarlo
   const statusBodyTemplate = (rowData) => {
-    return <Tag value={rowData.inventoryStatus} severity={getSeverity(rowData.inventoryStatus)}></Tag>;
+    return <Tag value={rowData.status} severity={getSeverity(rowData.status)}></Tag>;
   };
 
   const allowEdit = (rowData) => {
-    return rowData.name !== 'Blue Band';
+    return rowData.name !== 'blue band'
   };
 
   //* Estos campos son para poder visualizar la data que traemos y darle un formato.
@@ -100,7 +99,7 @@ export default function RowEditingDemo() {
         option.editorCallback([start, end]);
       } else {
         const adjustedEnd = new Date(start);
-        adjustedEnd.setDate(start.getDate() + 4); 
+        adjustedEnd.setDate(start.getDate() + 4);
         option.editorCallback([start, adjustedEnd]);
       }
     };
@@ -128,6 +127,7 @@ export default function RowEditingDemo() {
         <DataTable value={clients} editMode="row" dataKey="id" onRowEditComplete={onRowEditComplete} tableStyle={{ minWidth: '50rem' }} resizableColumns showGridlines>
           <Column field="name" header="Nombre" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
           <Column field="address" header="Dirección" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
+          <Column field="coordenates" header="cordenadas" style={{ width: '20%', padding: '15px' }}></Column>
           <Column field="phone1" header="Telefono 1" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
           <Column field="phone2" header="Telefono 2" editor={(options) => textEditor(options)} style={{ width: '20%' }}></Column>
           <Column
@@ -137,9 +137,11 @@ export default function RowEditingDemo() {
             style={{ width: '20%' }}
             body={dateBodyTemplate}
           />
-          <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} editor={(options) => statusEditor(options)} style={{ width: '20%' }}></Column>
-          <Column field="payments" header="Plan" editor={(options) => priceEditor(options)} style={{ width: '20%', padding: '15px' }}></Column>
-          <Column rowEditor={allowEdit} headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
+          
+          <Column field="payments" header="Plan" editor={(options) => priceEditor(options)} style={{ width: '20%', padding: '15px' }}></Column>      
+          <Column field="district" header="Servidor" style={{ width: '20%', padding: '15px' }}></Column>
+          <Column field="status" header="Estado" body={statusBodyTemplate} editor={(options) => statusEditor(options)} style={{ width: '20%' }}></Column>
+          <Column rowEditor={allowEdit} headerStyle={{ width: '10%', minWidth: '10rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
         </DataTable>
       </div>
     </>
